@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: db-handler
+spec:
+  serviceName: "db-handler"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: db-handler
+  template:
+    metadata:
+      labels:
+        app: db-handler
+    spec:
+      serviceAccountName: db-handler-sa
+      containers:
+      - name: db-handler
+        image: docker.io/library/db-handler:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 9999
+        volumeMounts:
+        - name: db-data
+          mountPath: /app/data
+        - name: beverages-config-volume
+          mountPath: /etc/config
+        env:
+        - name: CONFIG_MAP_PATH
+          value: /etc/config/beverages.json
+        - name: DB_HANDLER_URL
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: DB_HANDLER_URL
+      volumes:
+      - name: db-data
+        persistentVolumeClaim:
+          claimName: db-data-pvc
+      - name: beverages-config-volume
+        configMap:
+          name: beverages-config
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: db-data-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+      requests:
+        storage: 1Gi

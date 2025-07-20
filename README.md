@@ -38,7 +38,7 @@ This project is a microservices-based beverage store system, featuring a Java ba
 
 1. Build and start all services:
    ```sh
-   bash deploy-docker-compose.sh
+   bash deploy-k8s.sh
    ```
 2. Access the UI at [http://localhost:8088](http://localhost:8088)
 

@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: beverage-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: beverage-service
+  template:
+    metadata:
+      labels:
+        app: beverage-service
+    spec:
+      containers:
+      - name: beverage-service
+        image: docker.io/library/beverage-service:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8080
+        env:
+        - name: DB_HANDLER_URL
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: DB_HANDLER_URL
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: management-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: management-service
+  template:
+    metadata:
+      labels:
+        app: management-service
+    spec:
+      containers:
+      - name: management-service
+        image: docker.io/library/management-service:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8090
+        env:
+        - name: DB_HANDLER_URL
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: DB_HANDLER_URL
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ui-module
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ui-module
+  template:
+    metadata:
+      labels:
+        app: ui-module
+    spec:
+      containers:
+      - name: ui-module
+        image: docker.io/library/ui-module:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8082

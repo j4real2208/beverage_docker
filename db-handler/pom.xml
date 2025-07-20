@@ -53,6 +53,11 @@
             <artifactId>logback-classic</artifactId>
             <version>1.5.13</version>
         </dependency>
+        <dependency>
+            <groupId>io.kubernetes</groupId>
+            <artifactId>client-java</artifactId>
+            <version>17.0.0</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -80,6 +85,16 @@
                                     <mainClass>com.online.store.dbhandler.DBHandlerMain</mainClass>
                                 </transformer>
                             </transformers>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
                         </configuration>
                     </execution>
                 </executions>

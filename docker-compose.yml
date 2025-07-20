@@ -36,7 +36,7 @@ services:
       - DB_HANDLER_URL=${DB_HANDLER_URL}
 
   ui:
-    image: nginx:alpine
+    build: ./ui-module
     container_name: ui
     ports:
       - "8088:80"
