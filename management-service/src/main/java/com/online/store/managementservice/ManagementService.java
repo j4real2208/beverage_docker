@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 public class ManagementService {
 
     private static final Logger logger = LoggerFactory.getLogger(ManagementService.class);
-    private static final String DB_HANDLER_URL = "http://db:9999/v1/beverages";
+    private static final String DB_HANDLER_URL = System.getenv("DB_HANDLER_URL");
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)

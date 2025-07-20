@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 public class BeverageService {
 
     private static final Logger logger = LoggerFactory.getLogger(BeverageService.class);
-    private static final String DB_HANDLER_URL = "http://db:9999/v1/beverages";
+    private static final String DB_HANDLER_URL = System.getenv("DB_HANDLER_URL");
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -31,7 +31,7 @@ public class BeverageService {
                 return Response.status(response.getStatus()).entity(errorMsg).build();
             }
         } catch (Exception e) {
-            logger.error("Exception occurred while connecting to DB-Handler", e);
+            logger.error("Exception occurred while fetching beverages: {}", e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error connecting to DB-Handler").build();
         }
     }

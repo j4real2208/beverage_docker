@@ -2,6 +2,7 @@
 set -e
 
 PROJECT_NAME="soa_assign_2" # Change this to your project name or image prefix
+export DB_HANDLER_URL=http://db:9999/v1/beverages
 
 function build() {
   echo "Building Maven modules..."

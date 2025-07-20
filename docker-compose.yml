@@ -20,6 +20,8 @@ services:
       - app-network
     security_opt:
       - label=disable
+    environment:
+      - DB_HANDLER_URL=${DB_HANDLER_URL}
 
   mgm:
     build: ./management-service
@@ -30,6 +32,8 @@ services:
       - app-network
     security_opt:
       - label=disable
+    environment:
+      - DB_HANDLER_URL=${DB_HANDLER_URL}
 
   ui:
     image: nginx:alpine
