@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Beverage Store</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app-container">
+        <div class="flex-header">
+            <h2 id="welcome">Welcome!</h2>
+        </div>
+        <div id="main-view">
+            <h3>Bottles</h3>
+            <ul id="bottle-list"></ul>
+            <h3>Crates</h3>
+            <ul id="crate-list"></ul>
+            <button onclick="showAddForm()">Add Beverage</button>
+            <div id="add-form" style="display:none;">
+                <input type="text" id="add-name" placeholder="Name">
+                <input type="number" id="add-price" placeholder="Price">
+                <button onclick="addBeverage()">Add</button>
+            </div>
+            <div id="beverage-details" style="display:none;"></div>
+            <div id="beverage-error" style="color:red; display:none;"></div>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>

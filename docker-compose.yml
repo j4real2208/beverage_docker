@@ -1,0 +1,53 @@
+services:
+  db:
+    build: ./db-handler
+    container_name: db
+    ports:
+      - "9999:9999"
+    volumes:
+      - ./db-handler/beverages.json:/app/beverages.json
+    networks:
+      - app-network
+    security_opt:
+      - label=disable
+
+  bvg:
+    build: ./beverage-service
+    container_name: bvg
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+    security_opt:
+      - label=disable
+
+  mgm:
+    build: ./management-service
+    container_name: mgm
+    ports:
+      - "8090:8090"
+    networks:
+      - app-network
+    security_opt:
+      - label=disable
+
+  ui:
+    image: nginx:alpine
+    container_name: ui
+    ports:
+      - "8088:80"
+    volumes:
+      - ./ui-module/nginx.conf:/etc/nginx/nginx.conf:ro,z
+      - ./ui-module:/usr/share/nginx/html:ro,z
+    depends_on:
+      - bvg
+      - db
+      - mgm
+    networks:
+      - app-network
+    security_opt:
+      - label=disable
+
+networks:
+  app-network:
+    driver: bridge
