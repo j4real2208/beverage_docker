@@ -153,8 +153,7 @@ public class DBHandler {
     public Response addBeverage(String beverageJson) {
         try {
             List<Map<String, Object>> beverages = readBeveragesFromFile();
-            Map<String, Object> beverage = objectMapper.readValue(beverageJson, new TypeReference<>() {
-            });
+            Map<String, Object> beverage = objectMapper.readValue(beverageJson, new TypeReference<>() {});
             if (!beverage.containsKey("id")) {
                 int maxId = beverages.stream()
                     .map(obj -> obj.get("id"))
@@ -166,8 +165,7 @@ public class DBHandler {
             }
             beverages.add(beverage);
             updateConfigMap(beverages);
-            logger.info("Added new beverage: {}", beverageJson);
-            return Response.status(Response.Status.CREATED).build();
+            return Response.ok("Beverage added successfully").build();
         } catch (Exception e) {
             logger.error("Error adding beverage", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error adding beverage").build();
@@ -179,7 +177,10 @@ public class DBHandler {
     public Response deleteBeverage(@PathParam("id") String id) {
         try {
             List<Map<String, Object>> beverages = readBeveragesFromFile();
-            boolean found = beverages.removeIf(obj -> id.equals(obj.get("id")));
+            boolean found = beverages.removeIf(obj -> {
+                Object beverageId = obj.get("id");
+                return beverageId != null && id.equals(beverageId.toString());
+            });
             if (found) {
                 updateConfigMap(beverages);
                 logger.info("Deleted beverage with id: {}", id);

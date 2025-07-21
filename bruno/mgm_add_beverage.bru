@@ -1,0 +1,30 @@
+meta {
+  name: Management Service - Add Beverage
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://0.0.0.0:8090/management/beverages
+  body: json
+  auth: inherit
+}
+
+body:json {
+  "name": "Cola",
+  "price": 1.5,
+  "inStock": 100
+}
+
+tests {
+  test("Status should be 200", function() {
+    expect(res.getStatus()).to.equal(200);
+  });
+
+  test("Response should contain the added beverage", function() {
+    const body = res.getBody();
+    expect(body).to.have.property("name", "Cola");
+    expect(body).to.have.property("price", 1.5);
+    expect(body).to.have.property("inStock", 100);
+  });
+}

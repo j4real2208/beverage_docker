@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: {{ .Release.Namespace }}
+data:
+  DB_HANDLER_URL: {{ .Values.config.dbHandlerUrl | quote }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: beverages-config
+  namespace: {{ .Release.Namespace }}
+data:
+  beverages.json: |-
+{{ .Values.config.beverages.json | indent 4 }}
+

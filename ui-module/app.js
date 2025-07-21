@@ -61,6 +61,7 @@ function showBeverageDetails(beverage) {
     // Always show edit/delete buttons
     details.innerHTML += `<button onclick='editBeverage(${JSON.stringify(beverage)})'>Edit</button>`;
     details.innerHTML += `<button onclick='deleteBeverage(${beverage.id})'>Delete</button>`;
+    details.innerHTML += `<button onclick='closeView()'>Close View</button>`;
     details.style.display = 'block';
 }
 
@@ -77,7 +78,13 @@ function editBeverage(beverage) {
         }
     }
     details.innerHTML += `<button onclick='saveBeverage(${beverage.id})'>Save</button>`;
-    details.innerHTML += `<button onclick='loadBeverages()'>Cancel</button>`;
+    details.innerHTML += `<button onclick='closeView()'>Cancel</button>`;
+}
+
+function closeView() {
+    const details = document.getElementById('beverage-details');
+    details.style.display = 'none';
+    loadBeverages();
 }
 
 function saveBeverage(id) {
@@ -115,21 +122,57 @@ function deleteBeverage(id) {
 
 
 function showAddForm() {
-    document.getElementById('add-form').style.display = 'block';
+    const addForm = document.getElementById('add-form');
+    addForm.style.display = 'block';
+}
+
+function cancelAddForm() {
+    const addForm = document.getElementById('add-form');
+    addForm.style.display = 'none';
 }
 
 function addBeverage() {
     const name = document.getElementById('add-name').value;
-    const price = document.getElementById('add-price').value;
-    fetch('/api/beverages', {
+    const price = parseFloat(document.getElementById('add-price').value);
+    const volume = parseFloat(document.getElementById('add-volume').value);
+    const supplier = document.getElementById('add-supplier').value;
+    const volumePercent = parseFloat(document.getElementById('add-volumePercent').value);
+    const inStock = parseInt(document.getElementById('add-inStock').value, 10);
+    const type = document.getElementById('add-type').value;
+    const isAlcoholic = document.getElementById('add-isAlcoholic').checked;
+
+    const newBeverage = {
+        name,
+        price,
+        volume,
+        supplier,
+        volumePercent,
+        inStock,
+        type,
+        isAlcoholic
+    };
+
+    fetch('/management/beverages', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, price })
-    }).then(() => {
-        loadManageBeverages();
-        document.getElementById('add-form').style.display = 'none';
-        document.getElementById('add-name').value = '';
-        document.getElementById('add-price').value = '';
+        body: JSON.stringify(newBeverage)
+    })
+    .then(res => {
+        if (res.status === 200 || res.status === 201) {
+            return res.json();
+        } else {
+            throw new Error(`Unexpected response status: ${res.status}`);
+        }
+    })
+    .then(() => {
+        loadBeverages();
+        cancelAddForm();
+    })
+    .catch(err => {
+        const errorDiv = document.getElementById('beverage-error');
+        errorDiv.innerText = `Error adding beverage: ${err.message}`;
+        errorDiv.style.display = 'block';
+        console.error(err);
     });
 }
 

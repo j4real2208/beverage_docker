@@ -19,7 +19,19 @@
             <div id="add-form" style="display:none;">
                 <input type="text" id="add-name" placeholder="Name">
                 <input type="number" id="add-price" placeholder="Price">
+                <input type="number" id="add-volume" placeholder="Volume">
+                <input type="text" id="add-supplier" placeholder="Supplier">
+                <input type="number" id="add-volumePercent" placeholder="Volume Percent">
+                <input type="number" id="add-inStock" placeholder="In Stock">
+                <select id="add-type">
+                    <option value="bottle">Bottle</option>
+                    <option value="crate">Crate</option>
+                </select>
+                <label>
+                    <input type="checkbox" id="add-isAlcoholic"> Is Alcoholic
+                </label>
                 <button onclick="addBeverage()">Add</button>
+                <button onclick="cancelAddForm()">Cancel</button>
             </div>
             <div id="beverage-details" style="display:none;"></div>
             <div id="beverage-error" style="color:red; display:none;"></div>

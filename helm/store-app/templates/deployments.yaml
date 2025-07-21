@@ -1,0 +1,92 @@
+{{- if not .Values.beverageService.enabled | default true }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.beverageService.name }}
+  labels:
+    app: {{ .Values.beverageService.name }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+spec:
+  replicas: {{ .Values.beverageService.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.beverageService.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.beverageService.name }}
+    spec:
+      containers:
+      - name: {{ .Values.beverageService.name }}
+        image: "{{ .Values.global.imageRegistry }}/{{ .Values.beverageService.image.repository }}:{{ .Values.global.imageTag }}"
+        imagePullPolicy: {{ .Values.global.imagePullPolicy }}
+        ports:
+        - containerPort: {{ .Values.beverageService.service.port }}
+        env:
+        - name: DB_HANDLER_URL
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: DB_HANDLER_URL
+{{- end }}
+---
+{{- if not .Values.managementService.enabled | default true }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.managementService.name }}
+  labels:
+    app: {{ .Values.managementService.name }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+spec:
+  replicas: {{ .Values.managementService.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.managementService.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.managementService.name }}
+    spec:
+      containers:
+      - name: {{ .Values.managementService.name }}
+        image: "{{ .Values.global.imageRegistry }}/{{ .Values.managementService.image.repository }}:{{ .Values.global.imageTag }}"
+        imagePullPolicy: {{ .Values.global.imagePullPolicy }}
+        ports:
+        - containerPort: {{ .Values.managementService.service.port }}
+        env:
+        - name: DB_HANDLER_URL
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: DB_HANDLER_URL
+{{- end }}
+---
+{{- if not .Values.uiModule.enabled | default true }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.uiModule.name }}
+  labels:
+    app: {{ .Values.uiModule.name }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+spec:
+  replicas: {{ .Values.uiModule.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.uiModule.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.uiModule.name }}
+    spec:
+      containers:
+      - name: {{ .Values.uiModule.name }}
+        image: "{{ .Values.global.imageRegistry }}/{{ .Values.uiModule.image.repository }}:{{ .Values.global.imageTag }}"
+        imagePullPolicy: {{ .Values.global.imagePullPolicy }}
+        ports:
+        - containerPort: {{ .Values.uiModule.service.port }}
+{{- end }}

@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Values.dbHandler.name }}
+  labels:
+    app: {{ .Values.dbHandler.name }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+spec:
+  serviceName: {{ .Values.dbHandler.name }}
+  replicas: {{ .Values.dbHandler.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.dbHandler.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.dbHandler.name }}
+    spec:
+      serviceAccountName: {{ .Values.rbac.serviceAccountName }}
+      containers:
+      - name: {{ .Values.dbHandler.name }}
+        image: "{{ .Values.global.imageRegistry }}/{{ .Values.dbHandler.image.repository }}:{{ .Values.global.imageTag }}"
+        imagePullPolicy: {{ .Values.global.imagePullPolicy }}
+        ports:
+        - containerPort: {{ .Values.dbHandler.service.port }}
+        volumeMounts:
+        - name: db-data
+          mountPath: /app/data
+        - name: beverages-config-volume
+          mountPath: /etc/config
+        env:
+        - name: CONFIG_MAP_PATH
+          value: {{ .Values.dbHandler.configMapPath }}
+        - name: DB_HANDLER_URL
+          valueFrom:
+            configMapKeyRef:
+              name: app-config
+              key: DB_HANDLER_URL
+      volumes:
+      - name: beverages-config-volume
+        configMap:
+          name: beverages-config
+  {{- if .Values.dbHandler.persistence.enabled }}
+  volumeClaimTemplates:
+  - metadata:
+      name: db-data
+    spec:
+      accessModes:
+        - {{ .Values.dbHandler.persistence.accessMode }}
+      resources:
+        requests:
+          storage: {{ .Values.dbHandler.persistence.size }}
+  {{- end }}

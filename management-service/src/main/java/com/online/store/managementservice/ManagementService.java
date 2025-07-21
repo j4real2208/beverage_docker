@@ -70,7 +70,9 @@ public class ManagementService {
             try (Response response = target.request().post(Entity.json(beverage))) {
                 logger.info("Added beverage, status: {}", response.getStatus());
                 if (response.getStatus() >= 200 && response.getStatus() < 300) {
-                    return Response.ok("Beverage added successfully").build();
+                    return Response
+                            .ok("[{\"status\": \"successfully created!\"}]")
+                            .build();
                 } else {
                     return Response.status(response.getStatus()).entity(response.readEntity(String.class)).build();
                 }

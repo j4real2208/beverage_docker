@@ -1,0 +1,77 @@
+{{- if not .Values.beverageService.enabled | default true }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.beverageService.name }}
+  labels:
+    app: {{ .Values.beverageService.name }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+spec:
+  type: {{ .Values.beverageService.service.type }}
+  selector:
+    app: {{ .Values.beverageService.name }}
+  ports:
+    - protocol: TCP
+      port: {{ .Values.beverageService.service.port }}
+      targetPort: {{ .Values.beverageService.service.port }}
+{{- end }}
+---
+{{- if not .Values.managementService.enabled | default true }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.managementService.name }}
+  labels:
+    app: {{ .Values.managementService.name }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+spec:
+  type: {{ .Values.managementService.service.type }}
+  selector:
+    app: {{ .Values.managementService.name }}
+  ports:
+    - protocol: TCP
+      port: {{ .Values.managementService.service.port }}
+      targetPort: {{ .Values.managementService.service.port }}
+{{- end }}
+---
+{{- if not .Values.uiModule.enabled | default true }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.uiModule.name }}
+  labels:
+    app: {{ .Values.uiModule.name }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+spec:
+  type: {{ .Values.uiModule.service.type }}
+  selector:
+    app: {{ .Values.uiModule.name }}
+  ports:
+    - protocol: TCP
+      port: {{ .Values.uiModule.service.port }}
+      targetPort: {{ .Values.uiModule.service.port }}
+{{- end }}
+---
+{{- if not .Values.dbHandler.enabled | default true }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.dbHandler.name }}
+  labels:
+    app: {{ .Values.dbHandler.name }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+spec:
+  type: {{ .Values.dbHandler.service.type }}
+  selector:
+    app: {{ .Values.dbHandler.name }}
+  ports:
+    - protocol: TCP
+      port: {{ .Values.dbHandler.service.port }}
+      targetPort: {{ .Values.dbHandler.service.port }}
+  clusterIP: None
+{{- end }}
+

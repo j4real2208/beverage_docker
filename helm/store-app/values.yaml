@@ -1,0 +1,103 @@
+# Default values for store-app
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+global:
+  imageRegistry: docker.io/library
+  imageTag: latest
+  imagePullPolicy: Never
+  environment: development
+
+beverageService:
+  name: beverage-service
+  image:
+    repository: beverage-service
+    # The tag will use global.imageTag by default
+  replicas: 2
+  service:
+    type: ClusterIP
+    port: 8080
+
+dbHandler:
+  name: db-handler
+  image:
+    repository: db-handler
+    tag: latest
+  replicas: 1
+  service:
+    type: ClusterIP
+    port: 9999
+  persistence:
+    enabled: true
+    size: 1Gi
+    accessMode: ReadWriteOnce
+  configMapPath: /etc/config/beverages.json
+
+managementService:
+  name: management-service
+  image:
+    repository: management-service
+    tag: latest
+  replicas: 2
+  service:
+    type: ClusterIP
+    port: 8090
+
+uiModule:
+  name: ui-module
+  image:
+    repository: ui-module
+    tag: latest
+  replicas: 1
+  service:
+    type: ClusterIP
+    port: 8082
+
+# ConfigMap data
+config:
+  dbHandlerUrl: http://db-handler:9999/v1/beverages
+  beverages:
+    json: |-
+      [ {
+        "volume" : 0.5,
+        "isAlcoholic" : false,
+        "price" : 1.5,
+        "supplier" : "CocaCola",
+        "name" : "Cola Bottle",
+        "volumePercent" : 0.0,
+        "inStock" : 100,
+        "id" : 1,
+        "type" : "bottle"
+      }, {
+        "volume" : 0.33,
+        "isAlcoholic" : true,
+        "price" : 2.0,
+        "supplier" : "Brewery",
+        "name" : "Beer Bottle",
+        "volumePercent" : 5.0,
+        "inStock" : 50,
+        "id" : 2,
+        "type" : "bottle"
+      }, {
+        "noOfBottles" : 20,
+        "price" : 35.0,
+        "inStock" : 10,
+        "id" : 3,
+        "bottle" : {
+          "volume" : 0.33,
+          "isAlcoholic" : true,
+          "price" : 2.0,
+          "supplier" : "Brewery",
+          "name" : "Beer Bottle",
+          "volumePercent" : 5.0,
+          "inStock" : 50,
+          "id" : 2,
+          "type" : "bottle"
+        },
+        "type" : "crate"
+      } ]
+
+# RBAC configuration
+rbac:
+  create: true
+  serviceAccountName: db-handler-sa
